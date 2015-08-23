@@ -10,7 +10,8 @@ def optimumAlg(lines, cacheSize):
 	wlSize = len(lines)	
 	for i in xrange(wlSize):
 		if lines[i] not in wlDict:
-			wlDict[lines[i]] = [i]		
+			wlDict[lines[i]] = [i]
+
 		else:
 			wlDict[lines[i]].append(i)
 
@@ -18,6 +19,7 @@ def optimumAlg(lines, cacheSize):
 
 	#La cache será un Set (Conjunto) de lineas, los sets se forman de elementos unicos y su acceso es muy rápido
 	cache = set([])
+
 	#Numero de misses
 	misses = 0
 	#Iteracion de la tupla de lineas
@@ -63,6 +65,32 @@ def optimumAlg(lines, cacheSize):
 
 	return misses
 
+'''Function LRU'''
+def lruAlg(lines,cacheSize):
+	i = 0
+	misses=0
+	stack = [] #lista usada como pila
+	
+	for n in lines:
+		if(i < cacheSize):
+			stack.append(n)
+			i +=1
+			misses+=1
+			#print stack
+		else:
+			if n not in stack:
+				del stack[0]
+				stack.append(n)
+				misses+=1
+				#print stack	
+			else:
+				position=stack.index(n)
+				stack.append(stack[position])
+				del stack[position]
+				#print stack
+	#print misses			
+	return misses				
+			
 
 #Obtencion de argumentos de la linea de comandos
 wlFile = sys.argv[1]
@@ -78,7 +106,12 @@ print "\nEvaluando una caché",policy,"con",cacheSize,"entradas."
 print "Procesando...\n"
 
 if(policy == "OPTIMO" or policy == "ÓPTIMO" or policy == "optimo" or policy == "óptimo"):
+	
+	
 	misses = optimumAlg(lines, cacheSize)
+if(policy == "LRU" or policy == "lru"):
+	misses = lruAlg(lines,cacheSize)
+	#misses = lruAlg(lines, cacheSize)
 
 print "Resultados:"
 print "\tMiss rate: ",((float(misses)/len(lines))*100),"%  (",misses,"misses de",len(lines),"referencias ).\n"
