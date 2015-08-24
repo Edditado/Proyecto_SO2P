@@ -24,7 +24,7 @@ def optimumAlg(lines, cacheSize):
 	misses = 0
 	#Iteracion de la tupla de lineas
 	for i in xrange(wlSize):
-		#print i
+		
 
 		#Se remueve la posición de la linea actual de wlDict, así el primer elemento del arreglo 
 		#de dicha linea será la próxima posición en donde será usada nuevamente.
@@ -67,28 +67,43 @@ def optimumAlg(lines, cacheSize):
 
 '''Function LRU'''
 def lruAlg(lines,cacheSize):
-	i = 0
-	misses=0
-	stack = [] #lista usada como pila
 	
-	for n in lines:
-		if(i < cacheSize):
-			stack.append(n)
-			i +=1
-			misses+=1
-			#print stack
-		else:
-			if n not in stack:
-				del stack[0]
-				stack.append(n)
-				misses+=1
-				#print stack	
+	counter = 0 #contador incrementará automaticamente
+	misses=0
+	#cache = set([]) 
+	cache = {}
+	contDict = {}
+	
+	for line in lines:
+		
+		
+		if line not in cache:
+			
+			if(len(cache) < cacheSize):
+				cache[line]=counter
+				contDict[counter]=line
+				#contDict[n] = counter
+				counter+= 1
+				misses+= 1
+				
 			else:
-				position=stack.index(n)
-				stack.append(stack[position])
-				del stack[position]
-				#print stack
-	#print misses			
+				#tomaré el primer elemento del diccionario contDict clave(desde lines)->valor(contDict) como minimo para el reemplazo
+				minimum = min(contDict)		
+				del cache[contDict[minimum]]
+				del contDict[minimum]
+				cache[line]=counter
+				contDict[counter] = line
+				counter+= 1
+				misses+= 1	
+				
+		else:
+			del contDict[cache[line]]
+			cache[line]=counter
+			contDict[counter]=line
+			counter+=1
+			#print stack
+	#print misses
+					
 	return misses				
 			
 
