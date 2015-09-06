@@ -20,7 +20,7 @@ def optimumAlg(lines, cacheSize):
 	misses = 0
 
 	for i in xrange(wlSize):
-		print i
+		#print "\r",i+1,
 		wlDict[lines[i]].remove(i)
 		nextTime = wlDict[lines[i]][0]
 		if lines[i] not in cache:
@@ -83,6 +83,7 @@ def lruAlg(lines,cacheSize):
 	#print misses
 					
 	return misses				
+
 
 
 #Algoritmo clock			
@@ -171,4 +172,4 @@ if(policy == "CLOCK"):
 	misses = clockAlg(lines, cacheSize)
 	
 print "Resultados:"
-print "\tMiss rate: ",((float(misses)/len(lines))*100),"%  (",misses,"misses de",len(lines),"referencias ).\n"
+print "\tMiss rate: %.2f%% (%d misses de %d referencias)\n" % ( ((float(misses)/len(lines))*100), misses , len(lines) )
