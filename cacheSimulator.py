@@ -91,17 +91,21 @@ def clockAlg(lines, cacheSize):
 	misses=0
 	DicBit={}
 	DicDatos={}
-	DatoCache=[]
+	DatoCache={}
 	apuntador=1
 	lineas=len(lines)
 
 
 	for j in xrange(cacheSize):
 		DicBit[j+1]=0
+
+
+
 	for i in xrange(lineas):
 		
-		if lines[i] in DatoCache:
-			pos=(DatoCache.index(lines[i]))+1
+		
+		if DatoCache.has_key(lines[i]):
+			pos=DatoCache[lines[i]]
 			if DicBit[pos]==0:
 				DicBit[pos]=1
 		else:
@@ -110,40 +114,46 @@ def clockAlg(lines, cacheSize):
 			if DicBit[apuntador] == 0:
 					DicBit[apuntador]=1
 					if len(DatoCache) < cacheSize:
-						DatoCache.append(lines[i]) 
+						DatoCache[lines[i]]=apuntador
 						DicDatos[apuntador]=lines[i]
-						if apuntador < cacheSize:
-							apuntador+=1
-						else:
-							apuntador=1
+						
 					else:
-						DatoCache.remove(DicDatos[apuntador])
+						del DatoCache[DicDatos[apuntador]]
 						DicDatos[apuntador]=lines[i]
-						DatoCache.insert(apuntador-1,lines[i])
+						DatoCache[lines[i]]=apuntador
+					
+					if apuntador < cacheSize:
+						apuntador+=1
+					else:
+						apuntador=1
+
+
+
+			else:	
+					
+					
+					while (DicBit[apuntador]==1):
+						
+						DicBit[apuntador]=0
 						if apuntador < cacheSize:
 							apuntador+=1
 						else:
 							apuntador=1
-
-			else:
-					while (lines[i] in DatoCache)== False:
-						if DicBit[apuntador]==1:
-							DicBit[apuntador]=0
-							if apuntador < cacheSize:
-								apuntador+=1
-							else:
-								apuntador=1
+							
+						
+					if (DicBit[apuntador]==0):
+						del DatoCache[DicDatos[apuntador]]
+						DicDatos[apuntador]=lines[i]
+						DicBit[apuntador]=1
+						DatoCache[lines[i]]=apuntador
+						if apuntador < cacheSize:
+							apuntador+=1
 						else:
-							DatoCache.remove(DicDatos[apuntador])
-							DicDatos[apuntador]=lines[i]
-							DicBit[apuntador]=1
-							DatoCache.insert(apuntador-1, lines[i])
-							if apuntador < cacheSize:
-								apuntador+=1
-							else:
-								apuntador=1
+							apuntador=1
+					
+					
+					
 	return misses
-
 
 
 
